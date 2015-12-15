@@ -12,8 +12,16 @@
     tools:context="chiarahsieh.skypieah.happytranslator.SearchActivity"
     tools:showIn="@layout/activity_search">
 
-    <TextView
-        android:layout_width="wrap_content"
+    <EditText
+    android:id="@+id/etSearch"
+    android:layout_width="fill_parent"
+    android:layout_height="wrap_content"
+        android:hint="@string/input_hint" />
+
+    <ListView
+        android:id="@+id/lvEntry"
+        android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:text="Hello World!" />
+        android:layout_below="@+id/etSearch"/>
+
 </RelativeLayout>

@@ -1,15 +1,32 @@
 package chiarahsieh.skypieah.happytranslator;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.EditText;
+import android.widget.ListView;
+import android.widget.Toast;
+
+import java.util.ArrayList;
 
 public class SearchActivity extends AppCompatActivity {
+
+    private static String fileName = "happydict.json";
+
+    private EditText etSearch;
+    private ListView lvEntry;
+    private ArrayList<EntryClause> mEntryArrayList;
+    private EntryListAdapter elAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -18,14 +35,106 @@ public class SearchActivity extends AppCompatActivity {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
+        etSearch = (EditText) findViewById(R.id.etSearch);
+        lvEntry = (ListView) findViewById(R.id.lvEntry);
+
+        // Add Text Change Listener to EditText
+        etSearch.addTextChangedListener(new TextWatcher() {
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                // Call back the Adapter with current character to Filter
+                elAdapter.getFilter().filter(s.toString());
+            }
+
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count,int after) {
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+            }
+        });
+
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
+                showAlertDialog();
+//                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
+//                        .setAction("Action", null).show();
             }
         });
+    }
+
+    private void showAlertDialog() {
+
+        View addView = View.inflate(this, R.layout.add_dialog, null);
+        final EditText etEng = (EditText) addView.findViewById(R.id.etEng);
+        final EditText etChi = (EditText) addView.findViewById(R.id.etChi);
+        final EditText etTwn = (EditText) addView.findViewById(R.id.etTwn);
+
+        AlertDialog.Builder alertDialog = new AlertDialog.Builder(this)
+                .setTitle(R.string.add_entry)
+                .setView(addView)
+                .setPositiveButton(R.string.add_ok, new DialogInterface.OnClickListener(){
+
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        EntryClause newEntry = new EntryClause(
+                                etEng.getText().toString(),
+                                etChi.getText().toString(),
+                                etTwn.getText().toString()
+                        );
+                        mEntryArrayList.add(0, newEntry);
+                        elAdapter.notifyDataSetChanged();
+                        dialog.cancel();
+                    }})
+                .setNegativeButton(R.string.add_cancel, new DialogInterface.OnClickListener(){
+
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+//                        Toast.makeText(SearchActivity.this,
+//                                getResources().getText(R.string.add_cancel),
+//                                Toast.LENGTH_SHORT).show();
+                        dialog.cancel();
+                    }})
+                .setNeutralButton(R.string.add_next, new DialogInterface.OnClickListener() {
+
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        EntryClause newEntry = new EntryClause(
+                                etEng.getText().toString(),
+                                etChi.getText().toString(),
+                                etTwn.getText().toString()
+                        );
+                        mEntryArrayList.add(0,newEntry);
+                        elAdapter.notifyDataSetChanged();
+
+                        etEng.setText("");
+                        etChi.setText("");
+                        etTwn.setText("");
+                    }
+                });
+
+        alertDialog.show();
+
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+
+        // Read in json file
+        mEntryArrayList = HappyDict.loadEntries(this,fileName);
+        elAdapter = new EntryListAdapter(this,mEntryArrayList);
+        lvEntry.setAdapter(elAdapter);
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        HappyDict.saveEntries(this, fileName, mEntryArrayList);
     }
 
     @Override

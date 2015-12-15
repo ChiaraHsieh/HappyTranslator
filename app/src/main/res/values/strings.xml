@@ -1,4 +1,15 @@
 <resources>
     <string name="app_name">HappyTranslator</string>
     <string name="action_settings">Settings</string>
+    <string name="input_hint">輸入查詢</string>
+
+    <string name="add_entry">新增條目</string>
+    <string name="add_ok">結束新增</string>
+    <string name="add_cancel">取消新增</string>
+    <string name="add_next">新增下一筆</string>
+
+    <string name="add_eng">輸入英文</string>
+    <string name="add_chi">輸入中文</string>
+    <string name="add_twn">輸入台語</string>
+
 </resources>
