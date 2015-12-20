@@ -11,6 +11,7 @@ import android.text.TextWatcher;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.EditText;
 import android.widget.ListView;
 
@@ -102,6 +103,54 @@ public class SearchActivity extends AppCompatActivity {
 
     }
 
+    private void editAlertDialog(EntryClause entry, final int posInList) {
+
+        View addView = View.inflate(this, R.layout.add_dialog, null);
+        final EditText etEng = (EditText) addView.findViewById(R.id.etEng);
+        final EditText etChi = (EditText) addView.findViewById(R.id.etChi);
+        final EditText etTwn = (EditText) addView.findViewById(R.id.etTwn);
+
+        etEng.setText(entry.getEng());
+        etChi.setText(entry.getChi());
+        etTwn.setText(entry.getTwn());
+
+        AlertDialog.Builder alertDialog = new AlertDialog.Builder(this)
+                .setTitle(R.string.edit_entry)
+                .setView(addView)
+                .setPositiveButton(R.string.edit_ok, new DialogInterface.OnClickListener(){
+
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        EntryClause newEntry = new EntryClause(
+                                etEng.getText().toString(),
+                                etChi.getText().toString(),
+                                etTwn.getText().toString()
+                        );
+                        mEntryArrayList.set(posInList, newEntry);
+                        elAdapter.notifyDataSetChanged();
+                        dialog.cancel();
+                    }})
+                .setNegativeButton(R.string.edit_cancel, new DialogInterface.OnClickListener(){
+
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.cancel();
+                    }
+                })
+                .setNeutralButton(R.string.edit_delete, new DialogInterface.OnClickListener(){
+
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        mEntryArrayList.remove(posInList);
+                        elAdapter.notifyDataSetChanged();
+                        dialog.cancel();
+                    }
+                });
+
+        alertDialog.show();
+
+    }
+
     @Override
     protected void onResume() {
         super.onResume();
@@ -110,6 +159,13 @@ public class SearchActivity extends AppCompatActivity {
         mEntryArrayList = HappyDict.loadEntries(this,fileName);
         elAdapter = new EntryListAdapter(this,mEntryArrayList);
         lvEntry.setAdapter(elAdapter);
+        lvEntry.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
+            @Override
+            public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
+                editAlertDialog(mEntryArrayList.get(position),position);
+                return true;
+            }
+        });
     }
 
     @Override
