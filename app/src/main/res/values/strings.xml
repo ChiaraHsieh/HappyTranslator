@@ -6,7 +6,11 @@
     <string name="add_entry">新增條目</string>
     <string name="add_ok">結束新增</string>
     <string name="add_cancel">取消新增</string>
-    <string name="add_next">新增下一筆</string>
+
+    <string name="edit_entry">編輯條目</string>
+    <string name="edit_ok">結束編輯</string>
+    <string name="edit_cancel">取消編輯</string>
+    <string name="edit_delete">刪除條目</string>
 
     <string name="add_eng">輸入英文</string>
     <string name="add_chi">輸入中文</string>

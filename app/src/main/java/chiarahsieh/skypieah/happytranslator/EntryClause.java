@@ -37,6 +37,21 @@ public class EntryClause {
         return jObj;
     }
 
+    public String getChi() {
+        if(chi!=null) return chi;
+        else return "";
+    }
+
+    public String getEng() {
+        if(eng!=null) return eng;
+        else return "";
+    }
+
+    public String getTwn() {
+        if(twn!=null) return twn;
+        else return "";
+    }
+
     static class TAG {
         static String ENGLISH = "eng";
         static String CHINESE = "chi";
