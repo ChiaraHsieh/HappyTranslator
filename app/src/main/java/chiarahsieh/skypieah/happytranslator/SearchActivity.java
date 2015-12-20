@@ -2,20 +2,17 @@ package chiarahsieh.skypieah.happytranslator;
 
 import android.app.AlertDialog;
 import android.content.DialogInterface;
-import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.EditText;
 import android.widget.ListView;
-import android.widget.Toast;
 
 import java.util.ArrayList;
 
@@ -98,22 +95,6 @@ public class SearchActivity extends AppCompatActivity {
 //                                getResources().getText(R.string.add_cancel),
 //                                Toast.LENGTH_SHORT).show();
                         dialog.cancel();
-                    }})
-                .setNeutralButton(R.string.add_next, new DialogInterface.OnClickListener() {
-
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        EntryClause newEntry = new EntryClause(
-                                etEng.getText().toString(),
-                                etChi.getText().toString(),
-                                etTwn.getText().toString()
-                        );
-                        mEntryArrayList.add(0,newEntry);
-                        elAdapter.notifyDataSetChanged();
-
-                        etEng.setText("");
-                        etChi.setText("");
-                        etTwn.setText("");
                     }
                 });
 

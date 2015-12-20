@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">HappyTranslator</string>
+    <string name="app_name">黑皮翻譯機</string>
     <string name="action_settings">Settings</string>
     <string name="input_hint">輸入查詢</string>
 
