@@ -5,40 +5,56 @@
     android:layout_height="match_parent"
     android:padding="@dimen/entry_padding"
     android:orientation="horizontal"
+    android:clickable="true"
     android:longClickable="true">
 
 
-    <TextView
+    <chiarahsieh.skypieah.happytranslator.ScrollingTextView
         android:id="@+id/tvIdx"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:singleLine="true"
-        android:layout_weight="1"
+        android:layout_weight="0"
         android:textAppearance="?android:attr/textAppearanceMedium"
         />
-    <TextView
+    <chiarahsieh.skypieah.happytranslator.ScrollingTextView
         android:id="@+id/tvEng"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:singleLine="true"
         android:layout_weight="5"
         android:textAppearance="?android:attr/textAppearanceMedium"
+        android:ellipsize="marquee"
+        android:focusable="true"
+        android:focusableInTouchMode="true"
+        android:marqueeRepeatLimit="marquee_forever"
+        android:scrollHorizontally="true"
         />
-    <TextView
+    <chiarahsieh.skypieah.happytranslator.ScrollingTextView
         android:id="@+id/tvChi"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:singleLine="true"
         android:layout_weight="5"
         android:textAppearance="?android:attr/textAppearanceMedium"
+        android:ellipsize="marquee"
+        android:focusable="true"
+        android:focusableInTouchMode="true"
+        android:marqueeRepeatLimit="marquee_forever"
+        android:scrollHorizontally="true"
         />
-    <TextView
+    <chiarahsieh.skypieah.happytranslator.ScrollingTextView
         android:id="@+id/tvTwn"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:singleLine="true"
         android:layout_weight="5"
         android:textAppearance="?android:attr/textAppearanceMedium"
+        android:ellipsize="marquee"
+        android:focusable="true"
+        android:focusableInTouchMode="true"
+        android:marqueeRepeatLimit="marquee_forever"
+        android:scrollHorizontally="true"
         />
 
 </LinearLayout>

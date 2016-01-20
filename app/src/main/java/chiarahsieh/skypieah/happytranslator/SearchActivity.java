@@ -1,21 +1,31 @@
 package chiarahsieh.skypieah.happytranslator;
 
+import android.app.Activity;
 import android.app.AlertDialog;
+import android.content.Context;
 import android.content.DialogInterface;
+import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.view.Gravity;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.ListView;
+import android.widget.Toast;
 
 import java.util.ArrayList;
+import java.util.Random;
 
 public class SearchActivity extends AppCompatActivity {
 
@@ -25,6 +35,8 @@ public class SearchActivity extends AppCompatActivity {
     private ListView lvEntry;
     private ArrayList<EntryClause> mEntryArrayList;
     private EntryListAdapter elAdapter;
+
+    private static Random r = new Random();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -75,7 +87,7 @@ public class SearchActivity extends AppCompatActivity {
         AlertDialog.Builder alertDialog = new AlertDialog.Builder(this)
                 .setTitle(R.string.add_entry)
                 .setView(addView)
-                .setPositiveButton(R.string.add_ok, new DialogInterface.OnClickListener(){
+                .setPositiveButton(R.string.add_ok, new DialogInterface.OnClickListener() {
 
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
@@ -87,8 +99,9 @@ public class SearchActivity extends AppCompatActivity {
                         mEntryArrayList.add(0, newEntry);
                         elAdapter.notifyDataSetChanged();
                         dialog.cancel();
-                    }})
-                .setNegativeButton(R.string.add_cancel, new DialogInterface.OnClickListener(){
+                    }
+                })
+                .setNegativeButton(R.string.add_cancel, new DialogInterface.OnClickListener() {
 
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
@@ -117,7 +130,7 @@ public class SearchActivity extends AppCompatActivity {
         AlertDialog.Builder alertDialog = new AlertDialog.Builder(this)
                 .setTitle(R.string.edit_entry)
                 .setView(addView)
-                .setPositiveButton(R.string.edit_ok, new DialogInterface.OnClickListener(){
+                .setPositiveButton(R.string.edit_ok, new DialogInterface.OnClickListener() {
 
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
@@ -129,15 +142,16 @@ public class SearchActivity extends AppCompatActivity {
                         mEntryArrayList.set(posInList, newEntry);
                         elAdapter.notifyDataSetChanged();
                         dialog.cancel();
-                    }})
-                .setNegativeButton(R.string.edit_cancel, new DialogInterface.OnClickListener(){
+                    }
+                })
+                .setNegativeButton(R.string.edit_cancel, new DialogInterface.OnClickListener() {
 
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         dialog.cancel();
                     }
                 })
-                .setNeutralButton(R.string.edit_delete, new DialogInterface.OnClickListener(){
+                .setNeutralButton(R.string.edit_delete, new DialogInterface.OnClickListener() {
 
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
@@ -162,7 +176,7 @@ public class SearchActivity extends AppCompatActivity {
         lvEntry.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
             @Override
             public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
-                editAlertDialog(mEntryArrayList.get(position),position);
+                editAlertDialog(mEntryArrayList.get(position), position);
                 return true;
             }
         });
@@ -187,12 +201,57 @@ public class SearchActivity extends AppCompatActivity {
         // automatically handle clicks on the Home/Up button, so long
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
+        Context ctx = getApplicationContext();
 
         //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
+        if (id == R.id.action_version) {
+            Toast.makeText(ctx, getVersionInfo(ctx).toString(),Toast.LENGTH_SHORT).show();
             return true;
+        } else if (id == R.id.action_pig) {
+            LayoutInflater inflater = (LayoutInflater) ctx.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+            View layout = inflater.inflate(R.layout.pig_popup, (ViewGroup) findViewById(R.id.pig_popup_layout));
+            ImageView imageView = (ImageView) layout.findViewById(R.id.pig_popup_iv);
+            int pig_res;
+            switch(r.nextInt(3)) {
+                case 0:
+                    pig_res = R.drawable.pig_handsome;
+                    break;
+                case 1:
+                    pig_res = R.drawable.pig_horror;
+                    break;
+                case 2:
+                    pig_res = R.drawable.pig_oily;
+                    break;
+                default:
+                    pig_res = R.drawable.pig_handsome;
+            }
+            imageView.setBackgroundResource(pig_res);
+
+            Toast toast = new Toast(ctx);
+            toast.setGravity(Gravity.CENTER, 0, 0);
+            toast.setDuration(Toast.LENGTH_LONG);
+            toast.setView(layout);
+            toast.show();
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
+    private String getVersionInfo(Context context) {
+        String strVersion = "Version:";
+
+        PackageInfo packageInfo;
+        try {
+            packageInfo = context
+                    .getPackageManager()
+                    .getPackageInfo(
+                            getApplicationContext().getPackageName(),
+                            0
+                    );
+            strVersion += packageInfo.versionName;
+        } catch (PackageManager.NameNotFoundException e) {
+            strVersion += "Unknown";
         }
 
-        return super.onOptionsItemSelected(item);
+        return strVersion;
     }
 }
