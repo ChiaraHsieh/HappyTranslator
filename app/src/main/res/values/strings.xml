@@ -1,6 +1,5 @@
 <resources>
     <string name="app_name">黑皮翻譯機</string>
-    <string name="action_pig">剛烈</string>
     <string name="action_version">版本</string>
     <string name="input_hint">輸入查詢</string>
 

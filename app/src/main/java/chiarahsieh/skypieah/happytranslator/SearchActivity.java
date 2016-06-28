@@ -12,12 +12,15 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -31,6 +34,7 @@ public class SearchActivity extends AppCompatActivity {
 
     private static String fileName = "happydict.json";
 
+    private InputMethodManager inputMethodManager;
     private EditText etSearch;
     private ListView lvEntry;
     private ArrayList<EntryClause> mEntryArrayList;
@@ -45,6 +49,8 @@ public class SearchActivity extends AppCompatActivity {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
+        inputMethodManager =  (InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
+
         etSearch = (EditText) findViewById(R.id.etSearch);
         lvEntry = (ListView) findViewById(R.id.lvEntry);
 
@@ -54,6 +60,7 @@ public class SearchActivity extends AppCompatActivity {
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
                 // Call back the Adapter with current character to Filter
+                Log.d("INPUT", s.toString());
                 elAdapter.getFilter().filter(s.toString());
             }
 
@@ -63,6 +70,32 @@ public class SearchActivity extends AppCompatActivity {
 
             @Override
             public void afterTextChanged(Editable s) {
+            }
+        });
+
+        etSearch.setOnTouchListener(new View.OnTouchListener() {
+            final int DRAWABLE_LEFT = 0;
+            final int DRAWABLE_TOP = 1;
+            final int DRAWABLE_RIGHT = 2;
+            final int DRAWABLE_BOTTOM = 3;
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                if (event.getAction() == MotionEvent.ACTION_UP) {
+                    int leftEdgeOfRightDrawable = etSearch.getRight()
+                            - etSearch.getCompoundDrawables()[DRAWABLE_RIGHT].getBounds().width();
+                    // when EditBox has padding, adjust leftEdge like
+                    // leftEdgeOfRightDrawable -= getResources().getDimension(R.dimen.edittext_padding_left_right);
+                    if (event.getRawX() >= leftEdgeOfRightDrawable) {
+                        // clicked on clear icon
+                        etSearch.setText("");
+                        return true;
+                    } else {
+                        if (inputMethodManager != null){
+                            inputMethodManager.toggleSoftInput(InputMethodManager.SHOW_FORCED,0);
+                        }
+                    }
+                }
+                return false;
             }
         });
 
@@ -205,33 +238,8 @@ public class SearchActivity extends AppCompatActivity {
 
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_version) {
-            Toast.makeText(ctx, getVersionInfo(ctx).toString(),Toast.LENGTH_SHORT).show();
+            Toast.makeText(ctx, getVersionInfo(ctx),Toast.LENGTH_SHORT).show();
             return true;
-        } else if (id == R.id.action_pig) {
-            LayoutInflater inflater = (LayoutInflater) ctx.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-            View layout = inflater.inflate(R.layout.pig_popup, (ViewGroup) findViewById(R.id.pig_popup_layout));
-            ImageView imageView = (ImageView) layout.findViewById(R.id.pig_popup_iv);
-            int pig_res;
-            switch(r.nextInt(3)) {
-                case 0:
-                    pig_res = R.drawable.pig_handsome;
-                    break;
-                case 1:
-                    pig_res = R.drawable.pig_horror;
-                    break;
-                case 2:
-                    pig_res = R.drawable.pig_oily;
-                    break;
-                default:
-                    pig_res = R.drawable.pig_handsome;
-            }
-            imageView.setBackgroundResource(pig_res);
-
-            Toast toast = new Toast(ctx);
-            toast.setGravity(Gravity.CENTER, 0, 0);
-            toast.setDuration(Toast.LENGTH_LONG);
-            toast.setView(layout);
-            toast.show();
         }
         return super.onOptionsItemSelected(item);
     }
