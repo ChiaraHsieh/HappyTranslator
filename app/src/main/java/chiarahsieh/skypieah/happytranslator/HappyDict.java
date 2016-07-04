@@ -18,24 +18,28 @@ import java.util.ArrayList;
  */
 public class HappyDict {
 
+    public static String name = "happydict.json";
+
     /**
      * Construct ArrayList of EntryClause from JSON file
-     * @param fileName
      * @return list of dictionary entries
      */
-    public static ArrayList<EntryClause> loadEntries(Context context, String fileName) {
+    public static ArrayList<EntryClause> loadEntries(Context context) {
         ArrayList<EntryClause> mEntryArrayList = new ArrayList<EntryClause>();
         String jsonData = "";
 
         try {
-            File f = new File(context.getFilesDir().getPath() + "/" + fileName);
-            //check whether file exists
-            FileInputStream is = new FileInputStream(f);
-            int size = is.available();
-            byte[] buffer = new byte[size];
-            is.read(buffer);
-            is.close();
-            jsonData = new String(buffer);
+            synchronized(SearchActivity.sDataLock) {
+                File internalAppDir = context.getFilesDir();
+                File f = new File(internalAppDir,name);
+                Log.d("HappyDict",f.getAbsolutePath());
+                FileInputStream is = new FileInputStream(f);
+                int size = is.available();
+                byte[] buffer = new byte[size];
+                is.read(buffer);
+                is.close();
+                jsonData = new String(buffer);
+            }
         } catch (IOException e) {
             Log.e("TAG", "Error in Reading: " + e.getLocalizedMessage());
         }
@@ -52,7 +56,7 @@ public class HappyDict {
         return mEntryArrayList;
     }
 
-    public static void saveEntries(Context context, String fileName, ArrayList<EntryClause> mEntryArrayList) {
+    public static void saveEntries(Context context, ArrayList<EntryClause> mEntryArrayList) {
 
         JSONArray jArr = new JSONArray();
 
@@ -66,12 +70,18 @@ public class HappyDict {
         }
 
         try {
-            FileWriter file = new FileWriter(context.getFilesDir().getPath() + "/" + fileName);
-            file.write(jArr.toString());
-            file.flush();
-            file.close();
+            synchronized(SearchActivity.sDataLock) {
+                FileWriter file = new FileWriter(context.getFilesDir().getPath() + "/" + name);
+                file.write(jArr.toString());
+                file.flush();
+                file.close();
+            }
         } catch (IOException e) {
             Log.e("TAG", "Error in Writing: " + e.getLocalizedMessage());
         }
+    }
+
+    public static void exportFile() {
+
     }
 }

@@ -1,6 +1,5 @@
 package chiarahsieh.skypieah.happytranslator;
 
-import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -13,17 +12,13 @@ import android.support.v7.widget.Toolbar;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
-import android.view.Gravity;
-import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
-import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.EditText;
-import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.Toast;
 
@@ -32,7 +27,7 @@ import java.util.Random;
 
 public class SearchActivity extends AppCompatActivity {
 
-    private static String fileName = "happydict.json";
+    static final Object sDataLock = new Object();
 
     private InputMethodManager inputMethodManager;
     private EditText etSearch;
@@ -203,7 +198,7 @@ public class SearchActivity extends AppCompatActivity {
         super.onResume();
 
         // Read in json file
-        mEntryArrayList = HappyDict.loadEntries(this,fileName);
+        mEntryArrayList = HappyDict.loadEntries(this);
         elAdapter = new EntryListAdapter(this,mEntryArrayList);
         lvEntry.setAdapter(elAdapter);
         lvEntry.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
@@ -218,7 +213,7 @@ public class SearchActivity extends AppCompatActivity {
     @Override
     protected void onPause() {
         super.onPause();
-        HappyDict.saveEntries(this, fileName, mEntryArrayList);
+        HappyDict.saveEntries(this, mEntryArrayList);
     }
 
     @Override
